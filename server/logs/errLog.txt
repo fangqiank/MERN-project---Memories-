@@ -1,0 +1,1 @@
+20220808	12:35:45	7c5f5a3a-b615-41ed-b0eb-159dbe0d3f27	JsonWebTokenError: verify must be called asynchronous if secret or public key is provided as a callback
