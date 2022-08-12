@@ -200,7 +200,7 @@ export const postSlice = createSlice({
       })
       .addCase(fetchBySearch.fulfilled, (state, action) => {
         state.posts = action.payload.result
-        console.log(state.posts)
+        // console.log(state.posts)
         state.numberOfPages = action.payload.numberOfPages
         state.currentPage = action.payload.currentPage
         state.isLoading = false
@@ -216,6 +216,7 @@ export const postSlice = createSlice({
       })
       .addCase(fetchByCreator.fulfilled, (state, action) => {
         state.posts = action.payload.result
+        console.log(state.posts)
         state.numberOfPages = action.payload.numberOfPages
         state.currentPage = action.payload.currentPage
         state.isLoading = false

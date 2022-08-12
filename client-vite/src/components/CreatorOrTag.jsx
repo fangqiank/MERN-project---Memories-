@@ -1,5 +1,5 @@
 import React from 'react'
-import {useLocation, useSearchParams} from 'react-router-dom'
+import {useLocation, useSearchParams, useParams} from 'react-router-dom'
 import {Typography, Grid, CircularProgress, Divider} from '@mui/material'
 import {useDispatch, useSelector} from 'react-redux'
 
@@ -9,9 +9,9 @@ import {fetchBySearch, fetchByCreator} from '../features/post/postSlice'
 import { useEffect } from 'react'
 
 export const CreatorOrTag = () => {
-	// const {name} = useParams()
-	const [searchParams, setSearchParams] = useSearchParams()
-	const name = searchParams.get('name') 
+	const {name} = useParams()
+	// const [searchParams, setSearchParams] = useSearchParams()
+	// const name = searchParams.get('name') 
 	const dispatch = useDispatch()
 	const location = useLocation()
 	const {posts, isLoading} = useSelector(state => state.posts)
@@ -20,6 +20,7 @@ export const CreatorOrTag = () => {
 		location.pathname.startsWith('/tags') 
 		? dispatch(fetchBySearch({tags: name}))
 		: dispatch(fetchByCreator(name))
+		// dispatch(fetchByCreator(name))
 	}, [])
 
 	if(!posts.length && !isLoading) 
@@ -27,8 +28,8 @@ export const CreatorOrTag = () => {
 
 	return (
 		<div>
-			<Typography variant="h2">
-				{user}
+			<Typography variant="h6">
+				{name}
 			</Typography>
 
 			<Divider
