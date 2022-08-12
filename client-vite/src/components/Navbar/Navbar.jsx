@@ -2,14 +2,12 @@ import React,{useState, useEffect} from 'react'
 import {AppBar, Avatar, Button, Toolbar, Typography} from '@mui/material'
 import decode from 'jwt-decode';
 import { deepOrange } from '@mui/material/colors'
-import {Link, useNavigate} from 'react-router-dom'
-import {useDispatch} from 'react-redux'
-import { useLocation } from 'react-router-dom'
+import {Link, useNavigate, useLocation} from 'react-router-dom'
+import {useDispatch, useSelector} from 'react-redux'
 import memoriesLogo from '../../images/memoriesLogo.png'
-// import memoriesText from '../../images/memoriesText.png'
 import useStyles from './style'
-import {LOGOUT} from '../../constants/actionTypes'
-
+// import {LOGOUT} from '../../constants/actionTypes'
+import {logout} from '../../features/auth/authSlice'
 export const Navbar = () => {
 	const classes = useStyles()
 	const dispatch = useDispatch()
@@ -17,23 +15,21 @@ export const Navbar = () => {
 	const location = useLocation()
 	const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')))
 
-	// const userLogin = useSelector(state => state.auth)
-	// let { authData } = userLogin
+	const { authData } = useSelector(state => state.auth)
 	
-	const logout = () => {
-		dispatch({type: LOGOUT})
+	const signout = () => {
+		dispatch(logout())
 		navigate('/auth')
 		setUser(null)
 	}
 
 	useEffect(() => {
-		const token = user?.token
-		
+		const token = authData?.token
+
 		if(token) {
 			const decoded = decode(token)
 
-			// if(decoded.exp < Date.now() / 1000)
-			if (decoded.exp * 1000 < new Date().getTime())  
+			if (decoded.exp * 1000 < new Date().getTime())
 				logout()
 		}
 
@@ -87,7 +83,7 @@ export const Navbar = () => {
 							variant='contained'
 							className={classes.logout}
 							color='secondary'
-							onClick={logout} 
+							onClick={signout} 
 						>
 							Logout
 						</Button>

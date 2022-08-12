@@ -24,7 +24,7 @@ export const verifyJWT = (req, res, next) => {
     if (token && isCustomAuth) {
       decoded = jwt.verify(token, process.env.JWT_SECRET)
 
-      req.userId = decodedData?.id
+      req.userId = decoded?.id
     } else {
       decoded = jwt.decode(token)
 

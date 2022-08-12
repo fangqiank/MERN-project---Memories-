@@ -16,7 +16,7 @@ api.interceptors.request.use((req) => {
 
 export const fetchPosts = async (page) => {
   const res = await api.get(`/posts?page=${page}`)
-  // console.log(res.data)
+  // console.log('res.data', res.data)
   return res.data
 }
 
@@ -27,7 +27,7 @@ export const fetchPost = async (id) => {
 }
 
 export const fetchPostByCreator = async (creatorName) => {
-  const res = await api.get(`/posts/creator?user=${creatorName}`)
+  const res = await api.get(`/posts/creator?name=${creatorName}`)
 
   return res.data
 }
@@ -50,8 +50,9 @@ export const createPost = async (newPost) => {
 }
 
 export const updatePost = async (id, updPost) => {
+  // console.log({ id, updPost })
   const res = await api.patch(`/posts/${id}`, updPost)
-
+  // console.log(res.data)
   return res.data
 }
 
@@ -59,10 +60,11 @@ export const deletePost = async (id) => {
   const res = await api.delete(`/posts/${id}`)
 
   console.log(res.data)
+  return res.data
 }
 
 export const likePost = async (id) => {
-  const res = await api.patch(`/posts/${id}/like`)
+  const res = await api.patch(`/posts/${id}/likePost`)
 
   return res.data
 }

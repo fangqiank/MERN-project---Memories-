@@ -1,19 +1,20 @@
 import React, {useState, useEffect} from 'react'
 import { toast } from 'react-toastify'
 import {useDispatch, useSelector} from 'react-redux'
-import {useNavigate} from 'react-router-dom'
 import { TextField, Button, Typography, Paper } from '@mui/material'
 import useStyles from './style'
 import FileBase from 'react-file-base64'
-import { createPost, updatePost } from '../../actions/postAction'
+import { createPost, updatePost } from '../../features/post/postSlice'
 
 export const Form = ({currentId, setCurrentId}) => {
 	const classes = useStyles()
-  const navigate = useNavigate()
 	const dispatch = useDispatch()
 
 	// const [tag, setTag] = useState('')
-
+ 	const user = localStorage.getItem('profile')
+	 ? JSON.parse(localStorage.getItem('profile'))
+	 : null
+   
 	const post = useSelector(state => 
 		currentId ? state.posts.posts.find(p => p._id === currentId) : null
 	)
@@ -24,8 +25,6 @@ export const Form = ({currentId, setCurrentId}) => {
 		tags: '', 
 		selectedFile: '' 
 	})
-
-	const user = JSON.parse(localStorage.getItem('profile'))
 
 	const handleClear = () => {
 		setCurrentId(0)
@@ -44,27 +43,32 @@ export const Form = ({currentId, setCurrentId}) => {
 		e.preventDefault()
 
 		if(currentId === 0) {
-			dispatch(createPost({...postData, user: user?.result?.name}, navigate))
+			dispatch(createPost({...postData, user: user?.result?.name}))
 			toast.success('Post created successfully!')
 
 			handleClear()
 		}else{
-			dispatch(updatePost(currentId, {...postData, user: user?.result?.name }))
+			const updatedPost = {
+				id: currentId,
+				updPost: {...postData, user: user?.result?.name}
+			}
+			// console.log(updatedPost)
+			dispatch(updatePost(updatedPost))
 			toast.success(`Post ${currentId} updated successfully!`)
 
 			handleClear()
 		}
 	}
 
-	if(!user?.result?.name){
-		return (
-			<Paper className={classes.paper} elevation={6}>
-				<Typography variant="h6" align='center'>
-					Please Sign In to create your own memories and like other's memories.
-				</Typography>
-			</Paper>
-		)
-	}
+	// if(!user?.result) {
+	// 	return (
+	// 		<Paper className={classes.paper} elevation={6}>
+	// 			<Typography variant="h6" align='center'>
+	// 				Please Sign In to create your own memories and like other's memories.
+	// 			</Typography>
+	// 		</Paper>
+	// 	)
+	// }
 
 	useEffect(() => {
 		if(!post?.title) handleClear()

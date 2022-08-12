@@ -1,14 +1,17 @@
 import React, {useState} from 'react'
+import {createAction}from '@reduxjs/toolkit'
 import {useDispatch} from 'react-redux'
 import {useNavigate} from 'react-router-dom'
 import { GoogleLogin } from '@react-oauth/google'
 import {Avatar, Button, Paper, Typography, Container, Grid} from '@mui/material'
 import { deepPurple } from '@mui/material/colors'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
+import { toast } from 'react-toastify'
 import useStyles from './style'
 import {Input} from '../../components/Input'
-import {signIn, signUp} from '../../actions/userAction'
-import { AUTH } from '../../constants/actionTypes' 
+import { signIn, signUp } from '../../features/auth/authSlice'
+// import {signIn, signUp} from '../../actions/userAction'
+// import { AUTH } from '../../constants/actionTypes' 
 import jwt_decode from 'jwt-decode'
 
 const initialState = { 
@@ -30,15 +33,37 @@ export function SignUp() {
 	const [isSignup, setIsSignup] = useState(false)
 	const [form, setForm] = useState(initialState)
 
+	const byGoogle = createAction('auth/googleSignIn', function prepare(profile) {
+		return {
+			payload: {profile}
+		}
+	})
+
 	const handleShowPassword = () => setShowPassword(!showPassword)
 
 	const handleSubmit = e => {
 		e.preventDefault()
 
 		if (isSignup) {
-			dispatch(signUp(form, navigate))
+			const registerAndRedirect = {
+				formData: form,
+				redirect: navigate
+			}
+			if (form.password === form.confirmPassword){
+				dispatch(signUp(registerAndRedirect))
+				navigate('/')
+			}else{
+				setForm({...form, passowrd: '', confirmPassword: ''})
+				toast.warning('Passwords do not match')
+			}
+			
 		} else {
-			dispatch(signIn(form, navigate))
+			const loginAndRedirect = {
+				formData: form,
+				redirect: navigate
+			}
+			dispatch(signIn(loginAndRedirect))
+			navigate('/')
 		}
 	}
 
@@ -66,9 +91,10 @@ export function SignUp() {
 			token: response.credential
 		} 
 
-		// console.log(userInfo)
+		const action = byGoogle(userInfo)
+
 		try{
-			dispatch({type: AUTH, payload: userInfo})
+			localStorage.setItem('profile', JSON.stringify(action.payload.profile))
 			navigate('/')
 		}catch(err){
 			console.log(err)

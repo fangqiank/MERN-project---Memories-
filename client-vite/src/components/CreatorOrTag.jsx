@@ -4,22 +4,22 @@ import {Typography, Grid, CircularProgress, Divider} from '@mui/material'
 import {useDispatch, useSelector} from 'react-redux'
 
 import {Post} from './Posts/Post/Post'
-import { getPostByCreator, getPostBySearch } from '../actions/postAction'
+// import { getPostByCreator, getPostBySearch } from '../actions/postAction'
+import {fetchBySearch, fetchByCreator} from '../features/post/postSlice'
 import { useEffect } from 'react'
 
 export const CreatorOrTag = () => {
 	// const {name} = useParams()
 	const [searchParams, setSearchParams] = useSearchParams()
-	const user = searchParams.get('user') 
+	const name = searchParams.get('name') 
 	const dispatch = useDispatch()
 	const location = useLocation()
 	const {posts, isLoading} = useSelector(state => state.posts)
 
 	useEffect(() => {
-		// location.pathname.startsWith('/tags') 
-		// ? dispatch(getPostBySearch({tag: name}))
-		// : 
-		dispatch(getPostByCreator(user))
+		location.pathname.startsWith('/tags') 
+		? dispatch(fetchBySearch({tags: name}))
+		: dispatch(fetchByCreator(name))
 	}, [])
 
 	if(!posts.length && !isLoading) 

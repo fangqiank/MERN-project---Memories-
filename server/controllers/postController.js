@@ -117,7 +117,7 @@ export const deletePost = async (req, res) => {
 
   await Post.findByIdAndRemove(id)
 
-  res.status(200).json({ message: 'Post deleted successfully' })
+  res.status(200).json({ id, message: 'Post deleted successfully' })
 }
 
 export const likePost = async (req, res) => {

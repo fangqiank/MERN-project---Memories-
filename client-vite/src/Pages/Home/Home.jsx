@@ -1,8 +1,8 @@
 import React, {useState} from 'react'
-import {Container,Grow, AppBar, TextField, Button, Paper, Grid} from '@mui/material'
-import { useDispatch } from 'react-redux'
+import {Container,Grow, Alert ,AlertTitle ,AppBar, TextField, Button, Paper, Grid} from '@mui/material'
+import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { getPostBySearch } from '../../actions/postAction'
+import { fetchBySearch, fetchPosts } from '../../features/post/postSlice'
 
 import { Posts } from '../../components/Posts/Posts'
 import { Form } from '../../components/Form/Form'
@@ -23,15 +23,22 @@ export const Home = () => {
 	const page = query.get('page') || 1
 	const searchQuery = query.get('searchQuery')
 	const navigate = useNavigate()
+	const auth = useSelector(state => state.auth.authData)
+	const user = localStorage.getItem('profile')
+	 ? JSON.parse(localStorage.getItem('profile'))
+	 : null
 
 	const searchPost = () => {
-		if(search.trim() || tags) {
-			dispatch(getPostBySearch({
+		if(search.trim() || tags.length != 0) {
+			// dispatch(getPostBySearch({
+		 console.log({search, tags})
+			dispatch(fetchBySearch({	
 				search,
 				tags: tags.join(','),
 			}))
 			navigate(`/posts/search?searchQuery=${search || 'none'}&tags=${tags.join(',')}`)
 		} else {
+			dispatch(fetchPosts(page))
 			navigate('/')
 		}
 	}
@@ -97,8 +104,16 @@ export const Home = () => {
 									Search
 								</Button>
 						</AppBar>
+						{auth || user ? (
 						<Form currentId={currentId} setCurrentId={setCurrentId}/>
-						
+						) :(
+							<Paper className={classes.paper} elevation={6}>
+								<Alert severity="warning">
+  								<AlertTitle>Please Sign In</AlertTitle>
+										Please Sign In to create your own memories and like other's memories.
+									</Alert>
+							</Paper>
+						)}
 					</Grid>
 				</Grid>
 			</Container>

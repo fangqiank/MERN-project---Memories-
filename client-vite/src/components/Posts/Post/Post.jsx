@@ -3,18 +3,17 @@ import { styled } from '@mui/material/styles'
 import useStyles from './style'
 import {Stack,Card, CardHeader,CardActions, CardContent, CardMedia, Button, Typography, Chip, Avatar, IconButton } from '@mui/material'
 import FaceIcon from '@mui/icons-material/Face'
-// import MoreVertIcon from '@mui/icons-material/MoreVert'
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt'
 import DeleteIcon from '@mui/icons-material/Delete'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import ThumbUpAltOutlined from '@mui/icons-material/ThumbUpAltOutlined'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
-// import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import moment from 'moment'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { deletePost, likePost } from '../../../actions/postAction'
- 
+// import { deletePost, likePost } from '../../../actions/postAction'
+import {deletePost, likePost} from '../../../features/post/postSlice' 
+
 export const Post = ({post, setCurrentId}) => {
 	const classes = useStyles()
   const user = JSON.parse(localStorage.getItem('profile'))
@@ -24,7 +23,7 @@ export const Post = ({post, setCurrentId}) => {
   const navigate = useNavigate()
 
 	const userId = user?.result?._id
-	const hasLikedPost = post?.likes.find(like => like === userId)
+	const hasLikedPost = post?.likes?.find(like => like === userId)
 
 	const handleLike = () => {
 		dispatch(likePost(post._id))
@@ -134,7 +133,7 @@ export const Post = ({post, setCurrentId}) => {
 					color="textSecondary" 
 					component="h2"
 				>
-					{post.tags.map((tag, idx) => (
+					{post?.tags?.map((tag, idx) => (
 						<Stack
 							key={idx} 
 							direction={'row'} 
@@ -158,7 +157,7 @@ export const Post = ({post, setCurrentId}) => {
 					color="text.secondary" 
 					component="p"
 				>
-					{post.message.length > 20 ? `${post.message.substring(0, 20)}...` : post.message}
+					{post?.message?.length > 20 ? `${post.message.substring(0, 20)}...` : post.message}
 				</Typography>
 			</CardContent>
 
@@ -178,7 +177,7 @@ export const Post = ({post, setCurrentId}) => {
 				disabled={user?.result?._id !== post?.creator}
 				onClick={() => {
 					dispatch(deletePost(post._id))
-					window.location.reload()
+					// window.location.reload()
 				}}
 			>
 				<DeleteIcon fontSize="small" /> Delete

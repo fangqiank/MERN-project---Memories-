@@ -4,12 +4,12 @@ import {Stack, Paper, Typography, CircularProgress, Divider, Chip, Avatar} from 
 import {useDispatch, useSelector} from 'react-redux'
 import moment from 'moment'
 import { useNavigate, Link, useParams } from 'react-router-dom'
-import {getPost, getPostBySearch} from '../../actions/postAction'
+import {fetchPost, fetchBySearch} from '../../features/post/postSlice'
 import {CommentSection} from './CommentSection'
 
 export const PostDetails = () => {
 	const classes = useStyles()
-	const {posts, post, isLoading} = useSelector(state => state.posts)
+	const {posts, post, isLoading, isError, message} = useSelector(state => state.posts)
   const dispatch = useDispatch() 
   const navigate = useNavigate()
 	const {id} = useParams()
@@ -43,14 +43,16 @@ export const PostDetails = () => {
 		};
 	}
 
-
 	useEffect(() => {
-		dispatch(getPost(id))
-	},[id])
+		if(isError)
+			console.error(message)
+
+		dispatch(fetchPost(id))
+	},[isError,message,id])
 
 	useEffect(() => {
 		if(post){
-			dispatch(getPostBySearch({search: 'none', tags: post?.tags.join(',')}))
+			dispatch(fetchBySearch({search: 'none', tags: post?.tags?.join(',')}))
 		}
 	}, [post])
 
@@ -66,7 +68,7 @@ export const PostDetails = () => {
 		) 
 	}
 
-	const recommendedPosts = posts.filter(({_id}) => _id !== post._id) 
+	const recommendedPosts = posts?.filter(({_id}) => _id !== post._id) 
 
 	return (
 		<Paper style={{padding: '20px', borderRadius: '15px'}} elevation={6}>
@@ -81,7 +83,7 @@ export const PostDetails = () => {
 						color="textSecondary" 
 						component="h2"
 					>
-						{post.tags.map((tag, idx) => (
+						{post?.tags?.map((tag, idx) => (
             <Link
 							key={idx}
 							to={`/tags/${tag}`} 
@@ -110,7 +112,7 @@ export const PostDetails = () => {
 
 					<Typography variant="h6">
             Created by:
-            <Link to={`/posts/creator?user=${post.user}`} style={{ textDecoration: 'none', color: '#3f51b5' }}>
+            <Link to={`/creator?name=${post.user}`} style={{ textDecoration: 'none', color: '#3f51b5' }}>
               {` ${post.user}`}
             </Link>
           </Typography>
@@ -140,7 +142,7 @@ export const PostDetails = () => {
         </div>
 			</div>
 
-			{!!recommendedPosts.length && (
+			{!!recommendedPosts?.length && (
         <div className={classes.section}>
           <Typography gutterBottom variant="h5">
 						You might also like:

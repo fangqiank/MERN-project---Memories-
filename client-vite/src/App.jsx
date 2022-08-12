@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route} from 'react-router-dom'
 import {Container, ThemeProvider, createTheme} from '@mui/material'
 import { blue } from '@mui/material/colors';
 import { GoogleOAuthProvider } from '@react-oauth/google'
@@ -40,10 +40,12 @@ function App() {
               {/* <Route path="/posts/:id" element={<PostDetails />} /> */}
               {/* <Route path={['/creators/:name', '/tags/:name']} elememt={<CreatorOrTag />} /> */}
               {/* <Route path="/auth" element={!user ? <SignUp /> : <Navigate to="/posts" replace/>} /> */}
+              
               <Route path='/' element={<Home />} />
               <Route path='/auth' element={<SignUp />} />
               <Route path='/posts/search' element={<Home />} />
-              <Route path='/posts/creator' elememt={<CreatorOrTag />} />
+              <Route path='/creator/:name' element={<CreatorOrTag />} />
+              <Route path='/tags/:name' element={<CreatorOrTag />} />
 
               <Route path='/posts' element={<CheckLoggedIn/>}>
                 <Route path='/posts' element={<Home />} />  

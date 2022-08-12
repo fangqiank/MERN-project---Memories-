@@ -55,7 +55,6 @@ export const postReducer = (state = initialState, action) => {
     case UPDATE_POST:
       return {
         ...state,
-        post: {},
         posts: state.posts.map((post) =>
           post._id === action.payload._id ? action.payload : post,
         ),
@@ -70,7 +69,6 @@ export const postReducer = (state = initialState, action) => {
     case LIKE:
       return {
         ...state,
-        post: {},
         posts: state.posts.map((post) =>
           post._id === action.payload._id ? action.payload : post,
         ),

@@ -11,7 +11,8 @@ export const Posts = ({setCurrentId}) => {
 
 	// console.log({posts, isLoading});
 
-	if (!posts.length && !isLoading) return 'No posts'
+	if (!posts?.length && !isLoading) 
+		return 'No posts'
 
 	return (
 		isLoading ? (<CircularProgress  />) : (
